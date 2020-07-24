@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>
+        Suicide Awareness Map UK
+    </title>
+    <!-- meta settings -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!-- Bootstrap CDN-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- leaflet local files -->
+    <link rel="stylesheet" href="Leaflet/leaflet.css" />
+    <link rel="stylesheet" href="index.css" />
+
+    <script src="Leaflet/leaflet.js"></script>
+    <!-- Map Data -->
+    <script src="res/geoJSON_files/simplifyEER.json"></script>
+    <script src="res/geoJSON_files/LocalAuthority.json"></script>
+    <!--<script src="res/geoJSON_files/LA2020.json"></script> -->
+   <!-- <script src="map.js"></script> -->
+
+</head>
+
+<body>
+        <div id="idMap"></div>
+        <script>
+            
+            var LocalAuthorities = L.layerGroup(),
+            CountyLines = L.layerGroup();
+
+          /*  L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.').addTo(LocalAuthorities); */
+            L.geoJSON(la).addTo(LocalAuthorities);
+            L.geoJSON(eer).addTo(CountyLines);
+
+            window.alert(la[0].features[0].properties.lad20nm);
+            //window.alert('test');
+
+            var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+                    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoidG1hZGV2IiwiYSI6ImNrY3hjbjd0bTBtczczMHF1OGgyZDhxNmYifQ._CF-iwVk8A0wiLXDYn1qQw',
+                mbId = 'idMap'
+
+            var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
+                dark  = L.tileLayer(mbUrl, {id: 'mapbox/dark-v10', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
+                streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr})
+                satellite  = L.tileLayer(mbUrl, {id: 'mapbox/satellite-streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr})
+
+            var map = L.map(mbId, {
+                center: [54.75, -5],
+                zoomSnap: 0.1,
+                zoom: 6.7,
+                layers: [dark, CountyLines]
+            });
+
+            var baseLayers = {
+                "Counties": CountyLines,
+                "Local Authorities": LocalAuthorities,
+            };
+
+            var overlays = {
+                "Dark": dark,
+                "Grayscale": grayscale,
+                "Streets": streets,
+                "Satellite": satellite,
+            };
+
+            L.control.layers(baseLayers, overlays).addTo(map);
+
+            /*
+            function onMouseOver(e){
+                var layer = e.target;
+                layer.setStyle({
+                    color: blue,
+                });
+            
+                var LocalAuthorityHighlightName = e.feature.lad20nm; //lad20nm is generated as the name property , also has long and lat
+            };
+            */
+
+        </script>
+
+</body>
+<!-- javascript CDN -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+
+</html>
